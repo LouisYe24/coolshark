@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tedu.coolshark.mapper.ProductMapper">
+    <insert id="insert">
+        INSERT INTO product VALUES (NULL,#{title},#{price},#{oldPrice},
+                                    #{saleCount},#{num},#{categoryId},#{url}
+                                    ,0,#{created})
+    </insert>
+    <select id="selectAdmin" resultType="cn.tedu.coolshark.pojo.vo.ProductAdminVo">
+        SELECT id,
+               title,
+               price,
+               old_price  oldPrice,
+               sale_count saleCount,
+               num,
+               url,
+               view_count viewCount,
+               created
+        FROM product
+    </select>
+    <select id="selectUrlById" resultType="java.lang.String">
+        SELECT url FROM product WHERE id =#{id}
+    </select>
+
+    <delete id="deleteById">
+        DELETE FROM product WHERE id =#{id}
+    </delete>
+
+    <select id="selectUpdateById" resultType="cn.tedu.coolshark.pojo.vo.ProductUpdateVo">
+        SELECT id
+             , title
+             , price
+             , old_price   oldPrice
+             , sale_count  saleCount
+             , num
+             , category_id categoryId
+             , url
+        FROM product
+        WHERE id = #{id}
+    </select>
+<!--    动态修改商品数据-->
+<!--    1、set标签特点：-->
+<!--    (1)set标签用于更新语句中-->
+<!--    (2)set标签解析为set关键字-->
+<!--    (3)set可以去除跟新语句中无用的逗号-->
+<!--    (4)通常是和if标签一起使用-->
+    <update id="update" >
+
+        UPDATE product
+        <set>
+            <if test="title!=null">title=#{title},</if>
+            <if test="price!=null">price=#{price},</if>
+            <if test="oldPrice!=null">old_price=#{oldPrice},</if>
+            <if test="num!=null">num=#{num},</if>
+            <if test="saleCount!=null">sale_count=#{saleCount},</if>
+            <if test="url!=null">url=#{url},</if>
+            <if test="categoryId!=null">category_id=#{categoryId},</if>
+            <if test="created!=null">created=#{created},</if>
+            <if test="viewCount!=null">view_count=#{viewCount}</if>
+        </set>
+            WHERE id=#{id}
+    </update>
+
+
+    <select id="selectTop" resultType="cn.tedu.coolshark.pojo.vo.ProductTopVO">
+        SELECT id,title,sale_count saleCount
+        FROM product ORDER BY saleCount DESC LIMIT 0,6
+        </select>
+<select id="selectIndex" resultType="cn.tedu.coolshark.pojo.vo.ProductIndexVO">
+    SELECT id,title,price,old_price oldPrice,url,sale_count saleCount
+    FROM product
+</select>
+
+</mapper>
